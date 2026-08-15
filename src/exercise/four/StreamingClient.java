@@ -14,7 +14,7 @@ public class StreamingClient {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("=== Multimedia Streaming Client ===");
+        System.out.println("Multimedia Streaming Client");
         System.out.print("Enter media file name to request (e.g., sample.mp4 / song.mp3): ");
         String fileName = scanner.nextLine().trim();
         scanner.close();
@@ -36,22 +36,22 @@ public class StreamingClient {
                 long totalBytesReceived = 0;
                 boolean playerLaunched = false;
 
-                System.out.println("[-] Receiving stream...");
+                System.out.println("Receiving stream...");
 
                 while (true) {
                     DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
                     try {
                         clientSocket.receive(receivePacket);
                     } catch (java.net.SocketTimeoutException e) {
-                        System.out.println("[-] Stream finished or timed out.");
+                        System.out.println("Stream finished or timed out.");
                         break;
                     }
 
                     int packetLength = receivePacket.getLength();
 
-                    // Check for empty packet (EOF marker)
+
                     if (packetLength == 0) {
-                        System.out.println("[+] End of stream signal received.");
+                        System.out.println("End of stream signal received.");
                         break;
                     }
 
@@ -62,22 +62,19 @@ public class StreamingClient {
                         return;
                     }
 
-                    // Write received chunk to file
                     fos.write(receivePacket.getData(), 0, packetLength);
                     totalBytesReceived += packetLength;
-                    System.out.print("\r[+] Downloaded bytes: " + totalBytesReceived);
+                    System.out.print("\rDownloaded bytes: " + totalBytesReceived);
 
-                    // Launch media player once reasonable threshold is reached
                     if (!playerLaunched && totalBytesReceived >= BUFFER_THRESHOLD_BYTES) {
-                        System.out.println("\n[+] Reasonable buffer reached (" + totalBytesReceived + " bytes). Launching media player...");
+                        System.out.println("\nReasonable buffer reached (" + totalBytesReceived + " bytes). Launching media player...");
                         launchMediaPlayer(outputFile.getAbsolutePath());
                         playerLaunched = true;
                     }
                 }
 
-                System.out.println("\n[+] Streaming complete. File saved as: " + outputFile.getAbsolutePath());
+                System.out.println("\nStreaming complete. File saved as: " + outputFile.getAbsolutePath());
 
-                // If file was too small to trigger threshold during download, launch it now
                 if (!playerLaunched && outputFile.exists()) {
                     launchMediaPlayer(outputFile.getAbsolutePath());
                 }
@@ -95,13 +92,11 @@ public class StreamingClient {
             ProcessBuilder pb;
 
             if (os.contains("win")) {
-                // Windows default media player / launcher
                 pb = new ProcessBuilder("cmd.exe", "/c", filePath);
             } else if (os.contains("mac")) {
                 // macOS default player
                 pb = new ProcessBuilder("open", filePath);
             } else {
-                // Linux default player (e.g., xdg-open)
                 pb = new ProcessBuilder("xdg-open", filePath);
             }
             pb.start();
