@@ -7,7 +7,7 @@ public class TCPServer {
     private static final int PORT = 5000;
 
     public static void main(String[] args) {
-        System.out.println("--- Connection-Oriented (TCP) FTP Server Started ---");
+        System.out.println("Connection-Oriented (TCP) FTP Server Started!");
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (true) {
                 Socket socket = serverSocket.accept();
