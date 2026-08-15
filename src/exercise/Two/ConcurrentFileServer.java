@@ -7,7 +7,7 @@ public class ConcurrentFileServer {
     private static final int PORT = 7000;
 
     public static void main(String[] args) {
-        System.out.println("--- Concurrent File Server Started on Port " + PORT + " ---");
+        System.out.println("Concurrent File Server Started on Port " + PORT );
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             while (true) {
                 // Accept incoming client connection
